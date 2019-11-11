@@ -1,0 +1,7 @@
+1. create index page and connect to db 
+2. create the necessary db and tables
+3. create register page & login page, get those to work and then style it
+4. create header, with logo and navigation, and then style it
+5. continue with index page, to display user details and form for post
+6. create user class and all it's functions
+7. create post class and all it's functions
