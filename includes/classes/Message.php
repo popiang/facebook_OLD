@@ -250,7 +250,7 @@ class Message {
 									<div class='user_found_messages' style='" . $style . "'>
 										<img src='" . $user_found_obj->getProfilePicPath() . "' style='border-radius:5px; margin-right:5px;'>
 										" . $user_found_obj->getFirstAndLastName() . "
-										<br>
+										
 										<span class='timestamp_smaller' id='grey'> " . $latest_message_details[2] . "</span>
 										<p id='grey' style='margin:0;'>" . $latest_message_details[0] . $split . "</p>
 							   		</div>
