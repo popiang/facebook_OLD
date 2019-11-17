@@ -1,6 +1,10 @@
 <?php  
 
 require "config/config.php";
+include("includes/classes/Post.php");
+include("includes/classes/User.php");
+include("includes/classes/Message.php");
+include("includes/classes/Notification.php");
 
 // check if user is logged in
 if (isset($_SESSION['username'])) { 
@@ -62,6 +66,19 @@ if (isset($_SESSION['username'])) {
 		</section>
 
 		<nav>
+
+			<?php  
+
+				// unread messages
+				$messages = new Message($con, $userLoggedIn);
+				$numMessages = $messages->getUnreadNumber();
+
+				// unread notifications
+				$notifications = new Notification($con, $userLoggedIn);
+				$numNotifications = $notifications->getUnreadNumber();
+
+			?>
+			
 			<a href=" <?php echo $data['username'] ?> ">
 				<?php echo $first_name; ?>
 			</a>
@@ -70,9 +87,23 @@ if (isset($_SESSION['username'])) {
 			</a>
 			<a href="javascript:void(0)" onclick="getDropdownData('<?php echo $userLoggedIn; ?>', 'message')">
 				<i class="fas fa-envelope"></i>
+				<?php
+				
+				if ($numMessages > 0) {
+				  	echo "<span class='notification_badge' id='unread_message'>$numMessages</span>";
+				}  
+					
+				?>
 			</a>
-			<a href="#">
+			<a href="javascript:void(0)" onclick="getDropdownData('<?php echo $userLoggedIn; ?>', 'notification')">
 				<i class="far fa-bell"></i>
+				<?php
+				
+				if ($numNotifications > 0) {
+				  	echo "<span class='notification_badge' id='unread_notification'>$numNotifications</span>";
+				}  
+					
+				?>				
 			</a>
 			<a href="requests.php">
 				<i class="fas fa-users"></i>
@@ -92,65 +123,116 @@ if (isset($_SESSION['username'])) {
 
 	<script>
 
-		// handling infinite scrolling	
-		$(function(){
-
-				var userLoggedIn = '<?php echo $userLoggedIn; ?>';
-				var inProgress = false;
-				loadPosts(); //Load first posts
-
-				$(window).scroll(function() {
-					var bottomElement = $(".status_post").last();
-					var noMorePosts = $('.post_area').find('.noMorePosts').val();
-					// isElementInViewport uses getBoundingClientRect(), which requires the HTML DOM object, not the jQuery object. The jQuery equivalent is using [0] as shown below.
-					if (isElementInView(bottomElement[0]) && noMorePosts === 'false') {
-						loadPosts();
+	$(function(){
+	 
+			var userLoggedIn = '<?php echo $userLoggedIn; ?>';
+			var dropdownInProgress = false;
+	 
+		    $(".dropdown_data_window").scroll(function() {
+		    	var bottomElement = $(".dropdown_data_window a").last();
+				var noMoreData = $('.dropdown_data_window').find('.noMoreDropdownData').val();
+	 
+		        // isElementInViewport uses getBoundingClientRect(), which requires the HTML DOM object, not the jQuery object. The jQuery equivalent is using [0] as shown below.
+		        if (isElementInView(bottomElement[0]) && noMoreData == 'false') {
+		            loadPosts();
+		        }
+		    });
+	 
+		    function loadPosts() {
+		        if(dropdownInProgress) { //If it is already in the process of loading some posts, just return
+					return;
+				}
+				
+				dropdownInProgress = true;
+	 
+				var page = $('.dropdown_data_window').find('.nextPageDropdownData').val() || 1; //If .nextPage couldn't be found, it must not be on the page yet (it must be the first time loading posts), so use the value '1'
+	 
+				var pageName; //Holds name of page to send ajax request to
+				var type = $('#dropdown_data_type').val();
+	 
+				if(type == 'notification')
+					pageName = "ajax_load_notifications.php";
+				else if(type == 'message')
+					pageName = "ajax_load_messages.php";
+	 
+				$.ajax({
+					url: "includes/handlers/" + pageName,
+					type: "POST",
+					data: "page=" + page + "&userLoggedIn=" + userLoggedIn,
+					cache:false,
+	 
+					success: function(response) {
+	 
+						$('.dropdown_data_window').find('.nextPageDropdownData').remove(); //Removes current .nextpage 
+						$('.dropdown_data_window').find('.noMoreDropdownData').remove();
+	 
+						$('.dropdown_data_window').append(response);
+	 
+						dropdownInProgress = false;
 					}
 				});
-				
-				function loadPosts() {
-				
-					if(inProgress) { //If it is already in the process of loading some posts, just return
-						return;
-					}
-				
-					inProgress = true;
+		    }
+	 
+		    //Check if the element is in view
+		    function isElementInView (el) {
+		        var rect = el.getBoundingClientRect();
+	 
+		        return (
+		            rect.top >= 0 &&
+		            rect.left >= 0 &&
+		            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && //* or $(window).height()
+		            rect.right <= (window.innerWidth || document.documentElement.clientWidth) //* or $(window).width()
+		        );
+		    }
+		});		
 
-					var page = $('.post_area').find('.nextPage').val() || 1; //If .nextPage couldn't be found, it must not be on the page yet (it must be the first time loading posts), so use the value '1'
-					
-					$.ajax({
-						url: "includes/handlers/ajax_load_posts.php",
+		/*
+		var userLoggedIn = '<?php echo $userLoggedIn ?>';
+
+		$(document).ready(function() {
+
+			$(window).scroll(function() {
+
+				var inner_height = $('.dropdown_data_window').innerHeight(); // div containing data
+				var scroll_top = $('.dropdown_data_window').scrollTop();
+				var page = $('.dropdown_data_window').find('.nextPageDropdownData').val();
+				var noMoreData = $('dropdown_data_window').find('.noMoreDropdownData').val();
+
+				if(((scroll_top + inner_height) >= $('.dropdown_data_window')[0].scrollHeight) && (noMoreData == 'false')) {
+
+					var pageName; // holds name of page to send ajax request to
+					var type = $('#dropdown_data_type').val();
+
+					if(type == 'notification') {
+						pageName = "ajax_load_notification.php";
+					} else if(type == 'message') {
+						pageName = "ajax_load_messages.php";
+					}
+
+					var ajaxReq = $.ajax({
+
+						url: "includes/handlers/" + pageName,
 						type: "POST",
 						data: "page=" + page + "&userLoggedIn=" + userLoggedIn,
-						cache:false,
+						cache: false,
+
 						success: function(response) {
-							$('.post_area').find('.nextPage').remove(); //Removes current .nextpage
-							$('.post_area').find('.noMorePosts').remove(); 
-							$('.post_area').find('.noMorePostsText').remove();
-							$('#loading').hide();
-							$(".post_area").append(response);                                     
-							inProgress = false;
+
+							$('.dropdown_data_window').find('.nextPageDropdownData').remove();
+							$('.dropdown_data_window').find('.noMoreDropdownData').remove();
+
+							$('.dropdown_data_window').append(response);
+
 						}
+
 					});
+
 				}
-				
-				//Check if the element is in view
-				function isElementInView (el) {
 
-					if(el == null) {
-						return;
-					}
-
-					var rect = el.getBoundingClientRect();
-
-					return (
-						rect.top >= 0 &&
-						rect.left >= 0 &&
-						rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && 
-						rect.right <= (window.innerWidth || document.documentElement.clientWidth) 
-					);
-				}
 			});
+
+		});
+		*/
 
 	</script>	
 

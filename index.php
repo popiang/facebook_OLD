@@ -1,8 +1,8 @@
 <?php  
 
 include("includes/header.php");
-include("includes/classes/User.php");
-include("includes/classes/Post.php");
+// include("includes/classes/User.php");
+// include("includes/classes/Post.php");
 
 // checking if post submit button is pressed
 if (isset($_POST['post'])) {
