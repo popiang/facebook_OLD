@@ -1,5 +1,19 @@
 $(document).ready(function() {
 
+	$('#search_text_input').focus(function(){
+
+		// to check if the screen is wide enough for the search field to widen
+		if(window.matchMedia( "(min-width: 800px)" ).matches) {
+			$(this).animate({width: '250px'}, 500);
+		}
+
+	});
+
+	// submit the form
+	$('.button_holder').on('click', function() {
+		document.search_form.submit();
+	});
+
 	// button for profile post
 	$('#submit_profile_post').click(function() {
 
@@ -68,5 +82,27 @@ function getDropdownData(user, type) {
 		$(".dropdown_data_window").html("");
  		$(".dropdown_data_window").css({"padding" : "0px", "height" : "0", "border" : "none"});
 	}
+
+}
+
+function getLiveSearchUsers(value, user) {
+
+	$.post("include/handlers/ajax_search.php", {query:value, userLoggedIn: user}, function(data) {
+
+		if($(".search_results_footer_empty")[0]) {
+			$(".search_results_footer_empty").toggleClass("search_results_footer");
+			$(".search_results_footer_empty").toggleClass("search_results_footer_empty");
+		}
+
+		$('.search_results').html(data);
+		$('.search_results.footer').html("<a href='search.php?q=" + value + "'>See All Results</a>");
+
+		if(data = "") {
+			$('.search_results.footer').html("");
+			$('.search_results.footer').toggleClass("search_results_footer_empty");
+			$('.search_results_footer').toggleClass("search_results_footer");
+		}
+
+	});
 
 }

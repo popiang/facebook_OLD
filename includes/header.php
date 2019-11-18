@@ -65,6 +65,29 @@ if (isset($_SESSION['username'])) {
 			<a href="index.php">My Facebook</a>
 		</section>
 
+		<div class="search">
+			
+			<form action="search.php" method="GET" name="search_form">
+
+				<input id="search_text_input" type="text" name="q" onkeyup="getLiveSearchUsers(this.value, '<?php echo $userLoggedIn ?>')" placeholder="Seach..." autocomplete="off">
+
+				<div class="button_holder">
+					<img src="assets/images/icons/magnifying_glass.png">
+				</div>
+				
+
+			</form>
+
+			<div class="search_results">
+
+			</div>
+
+			<div class="search_results_footer_empty">
+
+			</div>
+
+		</div>
+
 		<nav>
 
 			<?php  
@@ -76,6 +99,10 @@ if (isset($_SESSION['username'])) {
 				// unread notifications
 				$notifications = new Notification($con, $userLoggedIn);
 				$numNotifications = $notifications->getUnreadNumber();
+
+				// number of friend requests
+				$user_obj = new User($con, $userLoggedIn);
+				$numRequest = $user_obj->getNumberOfFriendRequest();
 
 			?>
 			
@@ -107,6 +134,13 @@ if (isset($_SESSION['username'])) {
 			</a>
 			<a href="requests.php">
 				<i class="fas fa-users"></i>
+				<?php
+				
+				if ($numRequest > 0) {
+				  	echo "<span class='notification_badge' id='unread_request'>$numRequest</span>";
+				}  
+					
+				?>					
 			</a>
 			<a href="#">
 				<i class="fas fa-cog"></i>

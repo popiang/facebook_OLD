@@ -52,6 +52,9 @@ a {
 	text-decoration: none;
 	font-size: 20px;
 	margin-right: 5px;
+
+	display: inline-block;
+    position: relative;
 }
 
 .top_bar nav a:hover {
@@ -492,6 +495,56 @@ input[name='unlike_button'] {
     background-color: #f00;
     border-radius: 10px;
     position: absolute;
-    right: 133px;
-    top: 5px;
+    right: -5px;
+    top: -2px;
+}
+
+.resultDisplayNotification {
+    height: auto;
+    color: #1485bd;
+    padding-bottom: 6px;
+}
+
+.resultDisplayNotification img {
+	height: 40px;
+    border-radius: 5px;
+    margin: 1px 12px 0 2px;
+    float: left;
+}
+
+.timestamp_smaller {
+	font-size: 85%;
+	margin: 0;
+}
+
+.search {
+	margin: 8px 0 0 15%;
+}
+
+#search_text_input {
+	border: thin solid #e5e5e5;
+    float: left;
+    height: 23px;
+    outline: 0;
+    width: 100px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-bottom: 2px;
+}
+
+.button_holder {
+	background-color: #f1f1f1;
+    border: thin solid #e5e5e5;
+    cursor: pointer;
+    float: left;
+    height: 23px;
+    text-align: center;
+    width: 50px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.button_holder img {
+	margin-top:-6px;
+    width: 20px;
 }
