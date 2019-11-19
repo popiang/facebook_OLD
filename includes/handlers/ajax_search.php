@@ -18,7 +18,7 @@ elseif (count($names) == 2)
 
 // if query has one word only, search first names or last names
 else
-	$usersReturnedQuery = mysqli_query($con, "SELECT * FROM users WHERE (first_name LIKE '$names[0]%' AND last_name LIKE '$names[0]%') AND user_closed='no' LIMIT 8");	
+	$usersReturnedQuery = mysqli_query($con, "SELECT * FROM users WHERE (first_name LIKE '$names[0]%' OR last_name LIKE '$names[0]%') AND user_closed='no' LIMIT 8");	
 
 if ($query != "") {
 

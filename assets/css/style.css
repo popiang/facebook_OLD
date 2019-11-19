@@ -518,7 +518,7 @@ input[name='unlike_button'] {
 }
 
 .search {
-	margin: 8px 0 0 15%;
+	margin: 0 0 0 15%;
 }
 
 #search_text_input {
@@ -530,6 +530,7 @@ input[name='unlike_button'] {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     padding-bottom: 2px;
+    margin-top: 11px;
 }
 
 .button_holder {
@@ -542,9 +543,18 @@ input[name='unlike_button'] {
     width: 50px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
+    margin-top: 11px;
 }
 
 .button_holder img {
 	margin-top:-6px;
     width: 20px;
+}
+
+.search_results {
+	background-color: #fff;
+    border: 1px solid #dadada;
+    border-bottom: none;
+    border-top: none;
+    width: 320px;
 }
