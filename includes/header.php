@@ -69,14 +69,14 @@ if (isset($_SESSION['username'])) {
 			
 			<form action="search.php" method="GET" name="search_form">
 
-				<input id="search_text_input" type="text" name="q" onkeyup="getLiveSearchUsers(this.value, '<?php echo $userLoggedIn ?>')" placeholder="Seach..." autocomplete="off">
+				<input id="search_text_input" type="text" name="q" onkeyup="getLiveSearchUsers(this.value, '<?php echo $userLoggedIn ?>')" placeholder="Search..." autocomplete="off">
 
 				<div class="button_holder">
 					<img src="assets/images/icons/magnifying_glass.png">
 				</div>
 				
 
-			</form>
+			</form><br>
 
 			<div class="search_results">
 

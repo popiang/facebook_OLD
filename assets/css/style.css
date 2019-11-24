@@ -518,7 +518,8 @@ input[name='unlike_button'] {
 }
 
 .search {
-	margin: 0 0 0 15%;
+	margin: 0 0 0 8%;
+	float: left;
 }
 
 #search_text_input {
@@ -556,5 +557,44 @@ input[name='unlike_button'] {
     border: 1px solid #dadada;
     border-bottom: none;
     border-top: none;
-    width: 320px;
+    width: 300px;
+}
+
+.search_results_footer {
+	padding: 5px 4px 0 4px;
+    height: 20px;
+    border: 1px solid #dadada;
+    border-top: none;
+    background-color: #20aae5;
+    text-align: center;
+    height: 35px;
+}
+
+.search_results_footer a {
+	color: #fff;
+}
+
+.search_result {
+	padding: 10px;
+    height: 100px;
+}
+
+.searchPageFriendButtons {
+	float: right;
+}
+
+.result_profile_pic {
+	float: left;
+    margin-right: 10px;
+}
+
+.search_hr {
+	margin-bottom: 0;
+}
+
+.searchPageFriendButtons input[type='submit'] {
+	border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    color: #fff;	
 }
