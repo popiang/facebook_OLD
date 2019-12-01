@@ -76,6 +76,7 @@ a {
 	border-radius: 5px;
 	box-shadow: 1px 1px 3px #D3D3D3;
 	z-index: -1;
+	color: #555;
 }
 
 .column a {
@@ -597,4 +598,33 @@ input[name='unlike_button'] {
     padding: 7px 12px;
     border-radius: 5px;
     color: #fff;	
+}
+
+#small_profile_pic {
+	height: 70px;
+    margin: 1px 12px 0 2px;
+    float: left;
+}
+
+.settings_input {
+	border: 1px solid #ccc;
+    height: 20px;
+    padding: 4px 6px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.settings_submit {
+	border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.postedImage img {
+	max-height: 300px;
+	display: block;
+    margin: 5px auto;
 }

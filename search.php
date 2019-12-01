@@ -56,7 +56,8 @@ if (isset($_GET['type'])) {
 
 		while($row = mysqli_fetch_array($usersReturnedQuery)) {
 
-			$user_obj = new User($con, $row['username']);
+			// $user_obj = new User($con, $row['username']);
+			$user_obj = new User($con, $userLoggedIn);
 
 			$button = "";
 			$mutual_friends = "";
@@ -70,7 +71,7 @@ if (isset($_GET['type'])) {
 				elseif($user_obj->didReceiveRequest($row['username'])) 
 					$button = "<input type='submit' name='" . $row['username'] . "' class='warning' value='Respond to Request'>";
 				elseif($user_obj->didSendRequest($row['username']))
-					$button = "<input class='default' value='Request Sent'>";
+					$button = "<input type='submit' class='default' value='Request Sent'>";
 				else
 					$button = "<input type='submit' name='" . $row['username'] . "' class='
 				success' value='Add Friend'>";
@@ -78,12 +79,12 @@ if (isset($_GET['type'])) {
 				$mutual_friends = $user_obj->getMutualFriends($row['username']) . " friends in common";
 
 				// button forms
-				if (isset($_POST[$row['username']]
-			)) {
+				if (isset($_POST[$row['username']])) {
 					
 					if($user_obj->isFriend($row['username'])) {
-
+						//die("masuk is friend");
 						$user_obj->removeFriend($row['username']);
+						header("Location: http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 
 					} elseif ($user_obj->didReceiveRequest($row['username'])) {
 						
@@ -96,6 +97,7 @@ if (isset($_GET['type'])) {
 					} else {
 
 						$user_obj->sendRequest($row['username']);
+						header("Location: http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 
 					}
 

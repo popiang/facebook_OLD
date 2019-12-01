@@ -142,7 +142,7 @@ if (isset($_SESSION['username'])) {
 					
 				?>					
 			</a>
-			<a href="#">
+			<a href="settings.php">
 				<i class="fas fa-cog"></i>
 			</a>
 			<a href="includes/handlers/logout.php">
