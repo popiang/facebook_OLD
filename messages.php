@@ -1,20 +1,19 @@
 <?php  
 
 include("includes/header.php");
-// include("includes/classes/Message.php");
-// include("includes/classes/User.php");
 
 $message_obj = new Message($con, $userLoggedIn);
 
 if (isset($_GET['u'])) {
-	$user_to = $_GET['u'];
+	$user_to = $_GET['u']; // get the username to send message to
 } else {
 	$user_to = $message_obj->getMostRecentUser();
 	if ($user_to == false) {
-		$user_to = 'new';
+		$user_to = 'new';  // this is the first message/conversation
 	}
 }
 
+// create user obj of the user to send message to
 if ($user_to != 'new') {
 	$user_to_obj = new User($con, $user_to);
 }
@@ -26,6 +25,8 @@ if (isset($_POST['post_message'])) {
 		
 		$body = mysqli_real_escape_string($con, $_POST['message_body']);
 		$date = date("Y-m-d H:i:s");
+		
+		// send the message
 		$message_obj->sendMessage($user_to, $body, $date);
 
 	}

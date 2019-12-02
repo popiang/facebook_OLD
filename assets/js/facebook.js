@@ -60,13 +60,12 @@ $(document).click(function(e) {
 // handling friends search in message page
 function getUser(value, user) {
 	$.post("includes/handlers/ajax_friend_search.php", {query:value, userLoggedIn:user}, function(data) {
+		// result will be put in the 'results' class element
 		$(".results").html(data);
 	});
 }
 
 function getDropdownData(user, type) {
-
-	//alert('hello!!!');
 
 	if($(".dropdown_data_window").css("height") == "0px") {
 

@@ -1,32 +1,34 @@
 <?php  
 
 include("includes/header.php");
-// include("includes/classes/User.php");
-// include("includes/classes/Post.php");
 
 // checking if post submit button is pressed
 if (isset($_POST['post'])) {
-
+ 
 	$uploadOk = 1;
 	$imageName = $_FILES['fileToUpload']['name'];
 	$errorMessage = "";
 
+	// checking if an image is uploaded
 	if ($imageName != "") {
 		
 		$targetDir = "assets/images/posts/";
 		$imageName = $targetDir . uniqid() . basename($imageName);
 		$imageFileType = pathinfo($imageName, PATHINFO_EXTENSION);
 
+		// checking image size
 		if ($_FILES['fileToUpload']['size'] > 1000000) {
 			$errorMessage = "Sorry your file is too large";
 			$uploadOk = 0;
 		}
 
+		// checking image file type
 		if (strtolower($imageFileType) != "jpeg" && strtolower($imageFileType) != "png" && strtolower($imageFileType) != "jpg") {
 			$errorMessage = "Sorry, only jpeg, jpg and png files are allowed";
 			$uploadOk = 0;
 		}
 
+		// when pass all tests
 		if ($uploadOk) {
 			if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $imageName)) {
 				// image uploaded
@@ -37,6 +39,8 @@ if (isset($_POST['post'])) {
 		}
 	}
 
+	// checking if image successfully uploaded
+	// if there's no image, the value is true
 	if ($uploadOk) {
 
 		// create post object
@@ -136,7 +140,6 @@ if (isset($_POST['post'])) {
 				$(window).scroll(function() {
 					var bottomElement = $(".status_post").last();
 					var noMorePosts = $('.post_area').find('.noMorePosts').val();
-					// isElementInViewport uses getBoundingClientRect(), which requires the HTML DOM object, not the jQuery object. The jQuery equivalent is using [0] as shown below.
 					if (isElementInView(bottomElement[0]) && noMorePosts === 'false') {
 						loadPosts();
 					}
@@ -144,13 +147,16 @@ if (isset($_POST['post'])) {
 				
 				function loadPosts() {
 				
-					if(inProgress) { //If it is already in the process of loading some posts, just return
+					// if it is already in the process of loading some posts, just return
+					if(inProgress) { 
 						return;
 					}
 				
 					inProgress = true;
 					$('#loading').show();
-					var page = $('.post_area').find('.nextPage').val() || 1; //If .nextPage couldn't be found, it must not be on the page yet (it must be the first time loading posts), so use the value '1'
+
+					// if nextPage couldn't be found, it must not be on the page yet (it must be the first time loading posts), so use the value '1'
+					var page = $('.post_area').find('.nextPage').val() || 1; 
 					
 					$.ajax({
 						url: "includes/handlers/ajax_load_posts.php",
@@ -168,7 +174,7 @@ if (isset($_POST['post'])) {
 					});
 				}
 				
-				//Check if the element is in view
+				// check if the element is in view
 				function isElementInView (el) {
 
 					if(el == null) {

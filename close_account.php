@@ -2,10 +2,12 @@
 
 include("includes/header.php");
 
+// cancel button is pressed
 if (isset($_POST['cancel'])) {
 	header("Location: settings.php");
 }
 
+// close account button is pressed
 if (isset($_POST['close_account'])) {
 	
 	$close_query = mysqli_query($con, "UPDATE users SET user_closed='yes' WHERE username='$userLoggedIn'");

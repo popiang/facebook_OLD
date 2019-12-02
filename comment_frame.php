@@ -38,7 +38,8 @@ if (isset($_SESSION['username'])) {
 	</style>
 
 	<script>
-		
+
+		// toggle displaying the comment section base on mouse click		
 		function toggle() {
 
 			var element = document.getElementById('comment_section');
@@ -59,41 +60,62 @@ if (isset($_SESSION['username'])) {
 		$post_id = $_GET['post_id'];
 	}
 
+	// get details of the current post
 	$user_query = mysqli_query($con, "SELECT added_by, user_to FROM posts WHERE id='$post_id'");
 	$row = mysqli_fetch_array($user_query);
 
+	// posted_to is the user who writes the post and also the receiver of the comment
 	$posted_to = $row['added_by'];
+
+	// user_to is the receiver of the post
 	$user_to = $row['user_to'];
 
-	// if post comment button is pressed
+	// post comment button is pressed - unique by post id
 	if (isset($_POST['postComment' . $post_id])) {
+
+		// set variables value
 		$post_body = $_POST['post_body'];
+
+		// eliminate special characters in the post body
 		$post_body = mysqli_escape_string($con, $post_body);
+
+		// set current date and time
 		$date_time_now = date('Y-m-d H:i:s');
+
+		// insert comment into db
 		$insert_post = mysqli_query($con, "INSERT INTO comments (post_body, posted_by, posted_to, date_added, removed, post_id) VALUES ('$post_body', '$userLoggedIn', '$posted_to', '$date_time_now', 'no', '$post_id')");
 
 		// insert notification
+		// receiver of the comment is not the current logged in user
 		if ($posted_to != $userLoggedIn) {
 			$notification = new Notification($con, $userLoggedIn);
 			$notification->insertNotification($post_id, $posted_to, "comment");		
 		} 
 
+		// user_to = none -> meaning user post to themself
+		// user_to(receiver of the comment) is not the current logged in user
+		// if comment you own post, you won't receive any notification		
 		if($user_to != 'none' && $user_to != $userLoggedIn) {
 			$notification = new Notification($con, $userLoggedIn);
 			$notification->insertNotification($post_id, $user_to, "profile_comment");	
 		}
 
+		// get all users who commented on the same post
 		$get_commenters = mysqli_query($con, "SELECT * FROM comments WHERE post_id = '$post_id'");
 		$notified_users = array();
 
+		// notify all other commenters for the same post
 		while($row = mysqli_fetch_array($get_commenters)) {
 
-			if ($row['posted_by'] != $posted_to && $row['posted_by'] != $user_to
-				&& $row['posted_by'] != $userLoggedIn && !in_array($row['posted_by'], $notified_users)) {
+			if ($row['posted_by'] != $posted_to 		// don't notify the other commenter when it is you
+				&& $row['posted_by'] != $user_to		// ????
+				&& $row['posted_by'] != $userLoggedIn 	// don't notify the other commenter when it is you again(the current logged in user)
+				&& !in_array($row['posted_by'], $notified_users)) { // don't notify already notified commenter
 
 				$notification = new Notification($con, $userLoggedIn);
 				$notification->insertNotification($post_id, $row['posted_by'], "comment_non_owner");	
 
+				// keep track of notified commenters
 				array_push($notified_users, $row['posted_by']);
 
 			}
@@ -130,15 +152,15 @@ if (isset($_SESSION['username'])) {
 		while($comment = mysqli_fetch_array($get_comments_query)) {
 
 			// get all the data of the comment
-			$comment_body = $comment['post_body'];
-			$posted_to = $comment['posted_to'];
-			$posted_by = $comment['posted_by'];
-			$date_added = $comment['date_added'];
-			$remove = $comment['removed'];
+			$comment_body = $comment['post_body'];		// the comment body
+			$posted_to = $comment['posted_to'];			// user of the post to be commented
+			$posted_by = $comment['posted_by'];			// the commenter
+			$date_added = $comment['date_added'];		// date comment is added
+			$remove = $comment['removed'];				// ??
 
 			// time frame
 			$date_time_now = date("Y-m-d H:i:s");	
-			$start_date = new DateTime($date_added);		// time of post
+			$start_date = new DateTime($date_added);	// time of post
 			$end_date = new DateTime($date_time_now);	// current time
 			$interval = $start_date->diff($end_date);	// different between the 2 dates
 
@@ -192,6 +214,7 @@ if (isset($_SESSION['username'])) {
 
 			?>
 
+			<!-- displaying all the comments -->
 			<div class="comment_section">
 				<a href="<?php echo $posted_by ?>" target="_parent"><img src="<?php echo $user_obj->getProfilePicPath(); ?>" title="<?php echo $posted_by; ?>" style="float:left" height="30px"></a>
 				<a href="<?php echo $posted_by ?>" target="_parent"><b><?php echo $user_obj->getFirstAndLastName(); ?></b></a>
@@ -207,9 +230,6 @@ if (isset($_SESSION['username'])) {
 	}
 
 	?>
-
-
-
 
 </body>
 </html>

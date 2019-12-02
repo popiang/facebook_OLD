@@ -34,13 +34,18 @@ $total_user_likes = $row['num_likes'];
 
 // if like button is pressed
 if(isset($_POST['like_button'])) {
+
+	// increment likes
 	$total_likes++;
 	$total_user_likes++;
+
+	// update data in db
 	$query = mysqli_query($con, "UPDATE posts SET likes='$total_likes' WHERE id='$post_id'");
 	$user_likes = mysqli_query($con, "UPDATE users SET num_likes='$total_user_likes' WHERE username='$user_liked'");
 	$insert_query = mysqli_query($con, "INSERT INTO likes (username, post_id) VALUES ('$userLoggedIn', '$post_id')");	
 
 	// insert notification
+	// only when liking other users post
 	if ($user_liked != $userLoggedIn) {
 		$notification = new Notification($con, $userLoggedIn);
 		$notification->insertNotification($post_id, $user_liked, "like");		
@@ -49,11 +54,16 @@ if(isset($_POST['like_button'])) {
 	
 // if unlike button is pressed
 if(isset($_POST['unlike_button'])) {
+
+	// decrement likes
 	$total_likes--;
 	$total_user_likes--;
+
+	// update data in db
 	$query = mysqli_query($con, "UPDATE posts SET likes='$total_likes' WHERE id='$post_id'");
 	$user_likes = mysqli_query($con, "UPDATE users SET num_likes='$total_user_likes' WHERE username='$user_liked'");
 	$insert_query = mysqli_query($con, "DELETE FROM likes WHERE username='$userLoggedIn' AND post_id='$post_id'");	
+
 }
 
 // check for previous like
@@ -61,6 +71,7 @@ $check_query = mysqli_query($con, "SELECT * FROM likes WHERE username='$userLogg
 $num_rows = mysqli_num_rows($check_query);
 $post_id = trim($post_id);
 
+// if previously liked, then will display dislike/unlike button
 if($num_rows > 0) {
 
 	// unlike button

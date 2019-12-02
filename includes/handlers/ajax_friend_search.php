@@ -3,9 +3,13 @@
 include("../../config/config.php");
 include("../classes/User.php");
 
+// what is typed in the search field
 $query = $_POST['query'];
+
+// current logged in user
 $userLoggedIn = $_POST['userLoggedIn'];
 
+// splitted into an array
 $names = explode(" ", $query);
 
 if (strpos($query, "_") !== false) {	
@@ -19,6 +23,7 @@ if (strpos($query, "_") !== false) {
 	$usersReturned = mysqli_query($con, "SELECT * FROM users WHERE (first_name LIKE '%$names[0]%' OR last_name LIKE '%$names[0]%') AND user_closed='no' LIMIT 8");
 }
 
+// if something is typed in the search field
 if ($query != "") {
 	
 	while($row = mysqli_fetch_array($usersReturned)){

@@ -18,6 +18,7 @@ class Message {
 
 		$query = mysqli_query($this->con, "SELECT user_to, user_from FROM messages WHERE user_to='$userLoggedIn' OR user_from='$userLoggedIn' ORDER BY id DESC LIMIT 1");
 
+		// if no message found
 		if (mysqli_num_rows($query) == 0) {
 			return false;
 		}
@@ -53,6 +54,7 @@ class Message {
 		$userLoggedIn = $this->user_obj->getUserName();
 		$data = "";
 
+		// to turn off notification by setting opened to yes when user open the message 
 		$query = mysqli_query($this->con, "UPDATE messages SET opened='yes' WHERE user_to='$userLoggedIn' AND user_from='$otherUser'");
 
 		$get_messages_query = mysqli_query($this->con, "SELECT * FROM messages WHERE (user_to='$userLoggedIn' AND user_from='$otherUser') OR (user_from='$userLoggedIn' AND user_to='$otherUser')");
@@ -78,6 +80,7 @@ class Message {
 	// get the latest message along with the timeframe message in an array
 	public function getLatestMessage($userLoggedIn, $user_to) {
 
+		// array will be used to store the result of this method
 		$details_array = array();
 
 		$query = mysqli_query($this->con, "SELECT body, user_to, date FROM messages WHERE (user_to='$userLoggedIn' AND user_from='$user_to') OR (user_to='$user_to' AND user_from='$userLoggedIn') ORDER BY id DESC LIMIT 1");
@@ -87,7 +90,7 @@ class Message {
 
 		// timeframe 
 		$date_time_now = date("Y-m-d H:i:s");	
-		$start_date = new DateTime($row['date']);		// time of post
+		$start_date = new DateTime($row['date']);	// time of post
 		$end_date = new DateTime($date_time_now);	// current time
 		$interval = $start_date->diff($end_date);	// different between the 2 dates
 
@@ -191,6 +194,7 @@ class Message {
 
 	}
 
+	// create the list of dropdown of conversations in the navigation header message menu
 	public function getConvosDropdown($data, $limit) {
 
 		$page = $data['page'];
@@ -210,8 +214,10 @@ class Message {
 
 		while($row = mysqli_fetch_array($query)) {
 
+			// pushing the user other than the one logged in
 			$user_to_push = ($row['user_to'] != $userLoggedIn) ? $row['user_to'] : $row['user_from'];
 
+			// push the user into an array if not pushed yet
 			if (!in_array($user_to_push, $convos)) {
 				array_push($convos, $user_to_push);
 			}
@@ -227,6 +233,7 @@ class Message {
 		// list all the conversation 
 		foreach ($convos as $username) {
 
+			
 			if($num_interations++ < $start)
 				continue;
 
@@ -268,6 +275,7 @@ class Message {
 
 	}
 
+	// get the number of unread messages to be used in notification
 	public function getUnreadNumber() {
 
 		$userLoggedIn = $this->user_obj->getUserName();

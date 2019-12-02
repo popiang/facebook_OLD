@@ -5,6 +5,7 @@ class Post {
 	private $user;
 	private $con;
 
+	// constructor
 	public function __construct($con, $user) {
 		$this->con = $con;
 		$this->user_obj = new User($con, $user);
@@ -28,14 +29,18 @@ class Post {
 
 		if ($check_empty != "") {
 			
+			// splitting post body into an array
 			$body_array = preg_split("/\s+/", $body);
 
 			foreach ($body_array as $key => $value) {
 			
+				// checking for youtube link in the body post array
 				if (strpos($value, "www.youtube.com/watch?v=") !== false) {
 
+					// split the youtube link to remove uncessary info at the back of the link
 					$link = preg_split("!&!", $value);
 					
+					// get the youtube link and replace watch?v= -> embed/
 					$value = preg_replace("!watch\?v=!", "embed/", $link[0]);
 					$value = "<br><iframe with=\'420\' height=\'315\' src=\'" . $value . "\'></iframe><br>";
 					$body_array[$key] = $value;
@@ -44,6 +49,7 @@ class Post {
 
 			}
 
+			// join back the array element into a string(body)
 			$body = implode(" ", $body_array);
 
 			// current date and time
@@ -52,7 +58,7 @@ class Post {
 			// get username
 			$added_by = $this->user_obj->getUsername();
 
-			// if user is on own prfile, user_to is none
+			// if user is on own profile, user_to is none
 			if ($user_to == $added_by) {
 				$user_to = 'none';
 			}
@@ -107,18 +113,24 @@ class Post {
 			 youngest your yours z lol haha omg hey ill iframe wonder else like 
              hate sleepy reason for some little yes bye choose";
 
+             // split the long string into an array
              $stopWords = preg_split("/[\s,]+/", $stopWords);
 
+             // remove all punctuation
              $no_punctuation = preg_replace("/[^a-zA-Z 0-9]+/", "", $body);
 
+             // make sure no styling and http words in the post body
              if (strpos($no_punctuation, "height") === false && strpos($no_punctuation, "width") === false && strpos($no_punctuation, "http") === false) {
              	
+             	// split the body text into an array
              	$no_punctuation = preg_split("/[\s,]+/", $no_punctuation);
 
+             	// looping through and compare both array to eliminate stop words in the post body
              	foreach ($stopWords as $value) {
              		
              		foreach ($no_punctuation as $key => $value2) {
 
+             			// if found, will set to null
              			if (strtolower($value) == strtolower($value2)) {
              			
              				$no_punctuation[$key] = "";
@@ -129,6 +141,7 @@ class Post {
 
              	}
 
+             	// loop the remaining words in the post body to update trends table
              	foreach ($no_punctuation as  $value) {
              		$this->calculateTrend(ucfirst($value));
              	}
@@ -136,6 +149,7 @@ class Post {
 		}
 	}
 
+	// updating the trends table
 	public function calculateTrend($term) {
 
 		if ($term != '') {
@@ -150,7 +164,7 @@ class Post {
 		}
 	}
 
-	// load all posts
+	// load all friends posts
 	public function loadPostFriends($data, $limit) {
 
 		$page = $data['page'];
