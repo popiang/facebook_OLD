@@ -11,6 +11,7 @@ class Notification {
 		$this->user_obj = new User($con, $user);
 	}	
 
+	// get the number of unread notification
 	public function getUnreadNumber() {
 
 		$userLoggedIn = $this->user_obj->getUserName();
@@ -21,6 +22,7 @@ class Notification {
 
 	}
 
+	// list out all the notifications of the logged in user
 	public function getNotifications($data, $limit) {
 
 		$page = $data['page'];
@@ -33,8 +35,10 @@ class Notification {
 			$start = ($page - 1) * $limit;
 		}
 
+		// set the notification for the logged in user as viewed
 		$set_viewed_query = mysqli_query($this->con, "UPDATE notifications SET viewed='yes' WHERE user_to='$userLoggedIn'");
 
+		// get all the notifications for the logged in user
 		$query = mysqli_query($this->con, "SELECT * FROM notifications WHERE user_to='$userLoggedIn' ORDER BY id DESC");
 
 		if (mysqli_num_rows($query) == 0) {
@@ -61,14 +65,15 @@ class Notification {
 
 			$user_from = $row['user_from'];
 
+			// get the data of the user who the notification is from
 			$user_data_query = mysqli_query($this->con, "SELECT * FROM users WHERE username = '$user_from'");
 			$user_data = mysqli_fetch_array($user_data_query);
 
 			// timeframe 
 			$date_time_now = date("Y-m-d H:i:s");	
-			$start_date = new DateTime($row['datetime']);		// time of post
-			$end_date = new DateTime($date_time_now);	// current time
-			$interval = $start_date->diff($end_date);	// different between the 2 dates
+			$start_date = new DateTime($row['datetime']);	// time of post
+			$end_date = new DateTime($date_time_now);		// current time
+			$interval = $start_date->diff($end_date);		// different between the 2 dates
 
 			if ($interval->y >= 1) {
 				if ($interval->y == 1) {
